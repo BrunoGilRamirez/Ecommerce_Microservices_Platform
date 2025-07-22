@@ -1,22 +1,22 @@
 # 🚀 FP Kafka Infrastructure
 
-Repositorio independiente para la infraestructura de Apache Kafka utilizada en el ecosistema de microservicios FP.
+Standalone repository for the Apache Kafka infrastructure used in the FP microservices ecosystem.
 
-## 📋 Descripción
+## 📋 Description
 
-Este repositorio contiene toda la configuración necesaria para ejecutar Apache Kafka como broker de mensajes para la comunicación entre microservicios, incluyendo:
+This repository contains all the configuration needed to run Apache Kafka as a message broker for communication between microservices, including:
 
-- Configuración Docker Compose
-- Scripts de gestión automatizados
-- Documentación completa
-- Configuraciones optimizadas
+- Docker Compose configuration
+- Automated management scripts
+- Complete documentation
+- Optimized settings
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
 
 ```plain
 ┌─────────────────────────────────────────┐
 │              Kafka UI (9090)            │
-│          Interface de Gestión           │
+│          Management Interface           │
 └─────────────────────────────────────────┘
                     │
 ┌─────────────────────────────────────────┐
@@ -36,26 +36,26 @@ Este repositorio contiene toda la configuración necesaria para ejecutar Apache 
 ┌─────────────────────────────────────────┐
 │            Zookeeper                   │
 │              (Port 2181)               │
-│         Coordinación Kafka             │
+│         Kafka Coordination             │
 └─────────────────────────────────────────┘
 ```
 
-## 🚀 Inicio Rápido
+## 🚀 Quick Start
 
-### Prerrequisitos
+### Prerequisites
 
-- Docker instalado y ejecutándose
+- Docker installed and running
 - Docker Compose
-- PowerShell (Windows) o Terminal (Linux/Mac)
+- PowerShell (Windows) or Terminal (Linux/Mac)
 
-### 1. Clonar y Navegar
+### 1. Clone and Navigate
 
 ```bash
 git clone <repository-url>
 cd fp_kafka_infrastructure
 ```
 
-### 2. Iniciar Infraestructura
+### 2. Start Infrastructure
 
 ```powershell
 # Windows PowerShell
@@ -66,82 +66,82 @@ chmod +x scripts/kafka-manager.sh
 ./scripts/kafka-manager.sh start
 ```
 
-### 3. Verificar Estado
+### 3. Check Status
 
 ```powershell
 .\scripts\kafka-manager.ps1 status
 ```
 
-### 4. Acceder a Kafka UI
+### 4. Access Kafka UI
 
-- **URL**: <http://localhost:9090>
-- **Bootstrap Servers**: localhost:9092
+- URL: <http://localhost:9090>
+- Bootstrap Servers: localhost:9092
 
-## 📁 Estructura del Repositorio
+## 📁 Repository Structure
 
 ```plain
 fp_kafka_infrastructure/
-├── docker-compose.yml              # Configuración principal de Docker
-├── README.md                       # Este archivo
-├── scripts/                        # Scripts de gestión
-│   ├── kafka-manager.ps1           # Script PowerShell
-│   └── kafka-manager.sh            # Script Bash (futuro)
-├── docs/                           # Documentación
-│   ├── SETUP.md                    # Guía de configuración detallada
-│   ├── QUICK_GUIDE.md              # Guía rápida de uso
-│   ├── TROUBLESHOOTING.md          # Solución de problemas
-│   └── PRODUCTION.md               # Configuración para producción
-├── config/                         # Configuraciones adicionales
-│   ├── kafka.properties            # Configuración custom de Kafka
-│   └── log4j.properties            # Configuración de logging
-└── .env.example                    # Variables de entorno ejemplo
+├── docker-compose.yml              # Main Docker configuration
+├── README.md                       # This file
+├── scripts/                        # Management scripts
+│   ├── kafka-manager.ps1           # PowerShell script
+│   └── kafka-manager.sh            # Bash script (future)
+├── docs/                           # Documentation
+│   ├── SETUP.md                    # Detailed setup guide
+│   ├── QUICK_GUIDE.md              # Quick usage guide
+│   ├── TROUBLESHOOTING.md          # Troubleshooting
+│   └── PRODUCTION.md               # Production setup
+├── config/                         # Additional configurations
+│   ├── kafka.properties            # Custom Kafka settings
+│   └── log4j.properties            # Logging configuration
+└── .env.example                    # Example environment variables
 ```
 
-## 🛠️ Comandos Disponibles
+## 🛠️ Available Commands
 
-### Script de Gestión
+### Management Script
 
-| Comando                                     | Descripción                     |
-| ------------------------------------------- | ------------------------------- |
-| `.\scripts\kafka-manager.ps1 start`         | Inicia toda la infraestructura  |
-| `.\scripts\kafka-manager.ps1 stop`          | Detiene todos los servicios     |
-| `.\scripts\kafka-manager.ps1 restart`       | Reinicia los servicios          |
-| `.\scripts\kafka-manager.ps1 status`        | Muestra el estado actual        |
-| `.\scripts\kafka-manager.ps1 logs`          | Muestra logs en tiempo real     |
-| `.\scripts\kafka-manager.ps1 topics`        | Lista todos los topics          |
-| `.\scripts\kafka-manager.ps1 create-topics` | Crea topics para microservicios |
-| `.\scripts\kafka-manager.ps1 help`          | Muestra ayuda completa          |
+| Command                                     | Description                      |
+| ------------------------------------------- | -------------------------------- |
+| `.\scripts\kafka-manager.ps1 start`         | Starts the entire infrastructure |
+| `.\scripts\kafka-manager.ps1 stop`          | Stops all services               |
+| `.\scripts\kafka-manager.ps1 restart`       | Restarts services                |
+| `.\scripts\kafka-manager.ps1 status`        | Shows current status             |
+| `.\scripts\kafka-manager.ps1 logs`          | Streams real-time logs           |
+| `.\scripts\kafka-manager.ps1 topics`        | Lists all topics                 |
+| `.\scripts\kafka-manager.ps1 create-topics` | Creates topics for microservices |
+| `.\scripts\kafka-manager.ps1 help`          | Displays full help               |
 
-### Docker Compose Directo
+### Direct Docker Compose
 
 ```powershell
-# Iniciar servicios
+# Start services
 docker-compose up -d
 
-# Detener servicios
+# Stop services
 docker-compose down
 
-# Ver logs
+# View logs
 docker-compose logs -f kafka
 
-# Ver estado
+# View status
 docker-compose ps
 ```
 
-## 📋 Topics Configurados
+## 📋 Configured Topics
 
-| Topic          | Particiones | Replicación | Descripción                    |
-| -------------- | ----------- | ----------- | ------------------------------ |
-| product-events | 3           | 1           | Eventos del servicio productos |
-| user-events    | 3           | 1           | Eventos del servicio usuarios  |
-| order-events   | 3           | 1           | Eventos del servicio pedidos   |
-| product        | 3           | 1           | Topic simple para productos    |
-| user           | 3           | 1           | Topic simple para usuarios     |
-| order          | 3           | 1           | Topic simple para pedidos      |
+| Topic          | Partitions | Replication | Description               |
+| -------------- | ---------- | ----------- | ------------------------- |
+| product-events | 3          | 1           | Product service events    |
+| user-events    | 3          | 1           | User service events       |
+| order-events   | 3          | 1           | Order service events      |
+| product        | 3          | 1           | Simple topic for products |
+| user           | 3          | 1           | Simple topic for users    |
+| order          | 3          | 1           | Simple topic for orders   |
 
-## 🔧 Configuración de Microservicios
+## 🔧 Microservice Configuration
 
-### Conexión Básica
+### Basic Connection
 
 ```properties
 # application.properties
@@ -190,82 +190,82 @@ public class KafkaConsumerConfig {
 }
 ```
 
-## 🌐 Puertos Utilizados
+## 🌐 Ports Used
 
-| Servicio  | Puerto Host | Puerto Contenedor | Descripción       |
-| --------- | ----------- | ----------------- | ----------------- |
-| Zookeeper | 2181        | 2181              | Cliente Zookeeper |
-| Kafka     | 9092        | 9092              | Bootstrap servers |
-| Kafka JMX | 9101        | 9101              | Métricas JMX      |
-| Kafka UI  | 9090        | 8080              | Interface web     |
+| Service   | Host Port | Container Port | Description           |
+| --------- | --------- | -------------- | --------------------- |
+| Zookeeper | 2181      | 2181           | Zookeeper client port |
+| Kafka     | 9092      | 9092           | Bootstrap servers     |
+| Kafka JMX | 9101      | 9101           | JMX metrics           |
+| Kafka UI  | 9090      | 8080           | Web interface         |
 
-## 🔍 Monitoreo y Debug
+## 🔍 Monitoring & Debug
 
 ### Kafka UI Dashboard
 
-Accede a <http://localhost:9090> para:
+Visit <http://localhost:9090> to:
 
-- Visualizar topics y mensajes
-- Monitorear consumidores
-- Analizar throughput
-- Gestionar configuraciones
+- View topics and messages
+- Monitor consumers
+- Analyze throughput
+- Manage configurations
 
-### Comandos CLI Útiles
+### Useful CLI Commands
 
 ```powershell
-# Listar topics
+# List topics
 docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --list
 
-# Describir un topic
+# Describe a topic
 docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --describe --topic product-events
 
-# Consumir mensajes en tiempo real
+# Consume live messages
 docker exec fp-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic product-events --from-beginning
 
-# Producir mensajes de prueba
+# Produce test messages
 docker exec -it fp-kafka kafka-console-producer --bootstrap-server localhost:9092 --topic product-events
 ```
 
-## 📚 Documentación Adicional
+## 📚 Additional Documentation
 
-- [Guía de Configuración Detallada](docs/SETUP.md)
-- [Guía Rápida de Uso](docs/QUICK_GUIDE.md)
-- [Solución de Problemas](docs/TROUBLESHOOTING.md)
-- [Configuración para Producción](docs/PRODUCTION.md)
+- [Detailed Setup Guide](docs/SETUP.md)
+- [Quick Usage Guide](docs/QUICK_GUIDE.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Production Setup](docs/PRODUCTION.md)
 
-## 🚀 Integración con Microservicios
+## 🚀 Integration with Microservices
 
-Este repositorio está diseñado para integrarse con:
+This repository is designed to integrate with:
 
-- **Auth Service** (puerto 8081)
-- **User Service** (puerto 9002)
-- **Product Service** (puerto 9001)
-- **Order Service** (puerto 9003)
-- **Gateway** (puerto 8080)
-- **Config Server** (puerto 8888)
-- **Discovery Server** (puerto 8761)
+- Auth Service (port 8081)
+- User Service (port 9002)
+- Product Service (port 9001)
+- Order Service (port 9003)
+- Gateway (port 8080)
+- Config Server (port 8888)
+- Discovery Server (port 8761)
 
-## 🤝 Contribución
+## 🤝 Contributing
 
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/amazing-feature`)
-3. Commit tus cambios (`git commit -m 'Add amazing feature'`)
-4. Push a la rama (`git push origin feature/amazing-feature`)
-5. Abre un Pull Request
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Soporte
+## 🆘 Support
 
-Si encuentras problemas:
+If you encounter issues:
 
-1. Revisa la [documentación de troubleshooting](docs/TROUBLESHOOTING.md)
-2. Verifica que Docker esté ejecutándose
-3. Comprueba los logs: `.\scripts\kafka-manager.ps1 logs`
-4. Abre un issue en este repositorio
+1. Check the [troubleshooting documentation](docs/TROUBLESHOOTING.md)
+2. Ensure Docker is running
+3. Check logs: `.\scripts\kafka-manager.ps1 logs`
+4. Open an issue in this repository
 
 ---
 
-**Desarrollado para el ecosistema de microservicios FP** 🚀
+**Built for the FP microservices ecosystem** 🚀

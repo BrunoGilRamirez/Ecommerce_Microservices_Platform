@@ -1,5 +1,5 @@
-# Script para gestionar Kafka con Docker para el proyecto FP
-# Uso: .\kafka-manager.ps1 [start|stop|restart|status|logs|topics]
+# Script to manage Kafka with Docker for the FP project
+# Usage: .\kafka-manager.ps1 [start|stop|restart|status|logs|topics]
 
 param(
     [Parameter(Position=0)]
@@ -10,88 +10,88 @@ param(
 $ComposeFile = "docker-compose.yml"
 
 function ShowHelp {
-    Write-Host "=== Kafka Manager para Proyecto FP ===" -ForegroundColor Green
+    Write-Host "=== Kafka Manager for FP Project ===" -ForegroundColor Green
     Write-Host ""
-    Write-Host "Comandos disponibles:" -ForegroundColor Yellow
-    Write-Host "  start         - Inicia Kafka y Zookeeper"
-    Write-Host "  stop          - Detiene Kafka y Zookeeper"
-    Write-Host "  restart       - Reinicia los servicios"
-    Write-Host "  status        - Muestra el estado de los contenedores"
-    Write-Host "  logs          - Muestra los logs de Kafka"
-    Write-Host "  topics        - Lista los topics existentes"
-    Write-Host "  create-topics - Crea los topics necesarios para los microservicios"
-    Write-Host "  help          - Muestra esta ayuda"
+    Write-Host "Available commands:" -ForegroundColor Yellow
+    Write-Host "  start         - Starts Kafka and Zookeeper"
+    Write-Host "  stop          - Stops Kafka and Zookeeper"
+    Write-Host "  restart       - Restarts the services"
+    Write-Host "  status        - Shows the status of the containers"
+    Write-Host "  logs          - Displays Kafka logs"
+    Write-Host "  topics        - Lists existing topics"
+    Write-Host "  create-topics - Creates the necessary topics for the microservices"
+    Write-Host "  help          - Shows this help message"
     Write-Host ""
-    Write-Host "Ejemplo: .\kafka-manager.ps1 start" -ForegroundColor Cyan
+    Write-Host "Example: .\kafka-manager.ps1 start" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "URLs útiles:" -ForegroundColor Yellow
+    Write-Host "Useful URLs:" -ForegroundColor Yellow
     Write-Host "  Kafka UI: http://localhost:9090"
     Write-Host "  Kafka Bootstrap Servers: localhost:9092"
 }
 
 function StartKafka {
-    Write-Host "Iniciando Kafka y Zookeeper..." -ForegroundColor Green
+    Write-Host "Starting Kafka and Zookeeper..." -ForegroundColor Green
     docker-compose -f $ComposeFile up -d
     
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "Kafka iniciado correctamente" -ForegroundColor Green
-        Write-Host "Kafka UI disponible en: http://localhost:9090" -ForegroundColor Cyan
+        Write-Host "Kafka started successfully" -ForegroundColor Green
+        Write-Host "Kafka UI available at: http://localhost:9090" -ForegroundColor Cyan
         Write-Host "Bootstrap Servers: localhost:9092" -ForegroundColor Cyan
 
-        # Esperar a que Kafka esté listo
-        Write-Host "Esperando que Kafka este listo..." -ForegroundColor Yellow
+        # Wait for Kafka to be ready
+        Write-Host "Waiting for Kafka to be ready..." -ForegroundColor Yellow
         Start-Sleep -Seconds 10
         
-        # Crear topics automáticamente
+        # Automatically create topics
         CreateTopics
     } else {
-        Write-Host "Error al iniciar Kafka" -ForegroundColor Red
+        Write-Host "Failed to start Kafka" -ForegroundColor Red
     }
 }
 
 function StopKafka {
-    Write-Host "Deteniendo Kafka y Zookeeper..." -ForegroundColor Yellow
+    Write-Host "Stopping Kafka and Zookeeper..." -ForegroundColor Yellow
     docker-compose -f $ComposeFile down
     
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "Kafka detenido correctamente" -ForegroundColor Green
+        Write-Host "Kafka stopped successfully" -ForegroundColor Green
     } else {
-        Write-Host "Error al detener Kafka" -ForegroundColor Red
+        Write-Host "Failed to stop Kafka" -ForegroundColor Red
     }
 }
 
 function RestartKafka {
-    Write-Host "Reiniciando Kafka..." -ForegroundColor Yellow
+    Write-Host "Restarting Kafka..." -ForegroundColor Yellow
     StopKafka
     Start-Sleep -Seconds 5
     StartKafka
 }
 
 function ShowStatus {
-    Write-Host "Estado de los contenedores Kafka:" -ForegroundColor Green
+    Write-Host "Kafka container status:" -ForegroundColor Green
     docker-compose -f $ComposeFile ps
     Write-Host ""
-    Write-Host "Verificando conectividad..." -ForegroundColor Yellow
+    Write-Host "Checking connectivity..." -ForegroundColor Yellow
     docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --list 2>$null
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "Kafka está funcionando correctamente" -ForegroundColor Green
+        Write-Host "Kafka is running properly" -ForegroundColor Green
     } else {
-        Write-Host "Kafka no responde" -ForegroundColor Red
+        Write-Host "Kafka is not responding" -ForegroundColor Red
     }
 }
 
 function ShowLogs {
-    Write-Host "Mostrando logs de Kafka (Ctrl+C para salir):" -ForegroundColor Green
+    Write-Host "Showing Kafka logs (Ctrl+C to exit):" -ForegroundColor Green
     docker-compose -f $ComposeFile logs -f kafka
 }
 
 function ListTopics {
-    Write-Host "Topics existentes en Kafka:" -ForegroundColor Green
+    Write-Host "Existing topics in Kafka:" -ForegroundColor Green
     docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --list
 }
 
 function CreateTopics {
-    Write-Host "Creando topics necesarios para los microservicios..." -ForegroundColor Green
+    Write-Host "Creating required topics for the microservices..." -ForegroundColor Green
     
     $topics = @(
         "product",
@@ -100,31 +100,31 @@ function CreateTopics {
     )
     
     foreach ($topic in $topics) {
-        Write-Host "   Creando topic: $topic" -ForegroundColor Cyan
+        Write-Host "   Creating topic: $topic" -ForegroundColor Cyan
         docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --create --topic $topic --partitions 3 --replication-factor 1 --if-not-exists
     }
     
-    Write-Host "Topics creados correctamente" -ForegroundColor Green
+    Write-Host "Topics created successfully" -ForegroundColor Green
     Write-Host ""
     ListTopics
 }
 
-# Verificar si Docker está ejecutándose
+# Check if Docker is running
 try {
     docker version | Out-Null
 } catch {
-    Write-Host "Docker no está ejecutándose o no está instalado" -ForegroundColor Red
+    Write-Host "Docker is not running or not installed" -ForegroundColor Red
     exit 1
 }
 
-# Verificar si docker-compose existe
+# Check if docker-compose file exists
 if (!(Test-Path $ComposeFile)) {
-    Write-Host "No se encuentra el archivo $ComposeFile" -ForegroundColor Red
-    Write-Host "   Asegúrate de ejecutar este script desde el directorio del proyecto" -ForegroundColor Yellow
+    Write-Host "File $ComposeFile not found" -ForegroundColor Red
+    Write-Host "   Make sure to run this script from the project directory" -ForegroundColor Yellow
     exit 1
 }
 
-# Ejecutar acción
+# Execute action
 switch ($Action) {
     "start" { StartKafka }
     "stop" { StopKafka }

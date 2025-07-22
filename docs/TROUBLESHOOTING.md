@@ -1,165 +1,165 @@
-# 🔍 Solución de Problemas - Kafka Infrastructure
+# 🔍 Troubleshooting - Kafka Infrastructure
 
-## 🚨 Problemas Comunes y Soluciones
+## 🚨 Common Issues and Solutions
 
-### 1. Kafka no inicia correctamente
+### 1. Kafka Fails to Start Properly
 
-#### Síntomas - Kafka no inicia correctamente
+#### Symptoms - Kafka Fails to Start
 
-- Los contenedores se detienen inesperadamente
+- Containers stop unexpectedly
 - Error: "Connection to node -1 could not be established"
-- Logs muestran errores de conexión con Zookeeper
+- Logs show connection errors with Zookeeper
 
-#### Soluciones 1
+#### Solutions
 
 ```powershell
-# Verificar que Docker está ejecutándose
+# Check that Docker is running
 docker version
 
-# Limpiar contenedores existentes
+# Clean up existing containers
 .\scripts\kafka-manager.ps1 stop
 docker system prune -f
 
-# Verificar puertos disponibles
+# Verify available ports
 netstat -an | findstr ":9092"
 netstat -an | findstr ":2181"
 netstat -an | findstr ":9090"
 
-# Reiniciar desde cero
+# Restart from scratch
 .\scripts\kafka-manager.ps1 start
 ```
 
-#### Verificación
+#### Verification
 
 ```powershell
-# Comprobar estado de contenedores
+# Check container status
 docker ps --filter "name=fp-"
 
-# Verificar logs
+# Check logs
 docker logs fp-zookeeper
 docker logs fp-kafka
 docker logs fp-kafka-ui
 ```
 
-### 2. Microservicios no se pueden conectar a Kafka
+### 2. Microservices Cannot Connect to Kafka
 
-#### Síntomas - Microservicios no se pueden conectar a Kafka
+#### Symptoms - Connection Failures
 
 - Error: "Failed to send ProducerRecord"
 - "Connection to localhost:9092 failed"
-- Timeout en conexiones
+- Connection timeouts
 
-#### Soluciones de Conexión
+#### Connectivity Solutions
 
 ```powershell
-# Verificar que Kafka está ejecutándose
+# Check Kafka status
 .\scripts\kafka-manager.ps1 status
 
-# Probar conectividad desde host
+# Test connectivity from host
 telnet localhost 9092
 
-# Verificar configuración de red
+# Inspect network settings
 docker network ls
 docker network inspect fp_kafka-network
 ```
 
-#### Configuración de microservicios
+#### Microservice Configuration
 
 ```properties
-# Verificar en application.properties
+# In application.properties
 spring.kafka.bootstrap-servers=localhost:9092
 spring.kafka.consumer.auto-offset-reset=earliest
 spring.kafka.consumer.group-id=my-service-group
 ```
 
-### 3. Topics no se crean automáticamente
+### 3. Topics Are Not Created Automatically
 
-#### Síntomas - Topics no se crean automáticamente
+#### Symptoms - Missing Topics
 
 - Error: "Topic 'my-topic' not found"
-- Producers fallan al enviar mensajes
-- Lista de topics está vacía
+- Producers fail to send messages
+- Topic list is empty
 
-#### Soluciones para Topics
+#### Topic Creation Solutions
 
 ```powershell
-# Crear topics manualmente
+# Create topics manually
 .\scripts\kafka-manager.ps1 create-topics
 
-# Verificar configuración de auto-creación
+# Check auto-creation settings
 docker exec fp-kafka kafka-configs --bootstrap-server localhost:9092 --entity-type brokers --entity-name 1 --describe
 
-# Crear topic específico
+# Create a specific topic
 docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --create --topic my-topic --partitions 3 --replication-factor 1
 ```
 
-### 4. Kafka UI no es accesible
+### 4. Kafka UI Is Not Accessible
 
-#### Síntomas - Kafka UI no es accesible
+#### Symptoms - UI Unreachable
 
-- Error 404 en <http://localhost:9090>
+- 404 Error at <http://localhost:9090>
 - "This site can't be reached"
-- Página en blanco
+- Blank page
 
-#### Soluciones
+#### UI Solutions
 
 ```powershell
-# Verificar que el contenedor está ejecutándose
+# Check that the container is running
 docker ps --filter "name=fp-kafka-ui"
 
-# Verificar logs de Kafka UI
+# Check UI logs
 docker logs fp-kafka-ui
 
-# Verificar puerto
+# Verify port usage
 netstat -an | findstr ":9090"
 
-# Reiniciar solo Kafka UI
+# Restart only Kafka UI
 docker restart fp-kafka-ui
 ```
 
-### 5. Mensajes no se consumen
+### 5. Messages Are Not Consumed
 
-#### Síntomas - Mensajes no se consumen
+#### Symptoms - No Consumers
 
-- Producers envían pero consumers no reciben
-- Lag en consumer groups aumenta
-- Mensajes quedan pendientes
+- Producers send but consumers do not receive
+- Consumer group lag increases
+- Pending messages
 
-#### Diagnóstico
+#### Diagnosis
 
 ```powershell
-# Verificar consumer groups
+# List consumer groups
 docker exec fp-kafka kafka-consumer-groups --bootstrap-server localhost:9092 --list
 
-# Ver detalles de un group
+# Describe a specific group
 docker exec fp-kafka kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group my-service-group
 
-# Verificar mensajes en topic
+# Read messages from topic
 docker exec fp-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic product-events --from-beginning
 ```
 
-#### Soluciones de Consumer
+#### Consumer Solutions
 
 ```java
-// Verificar configuración del consumer
+// Verify consumer configuration
 @KafkaListener(topics = "product-events", groupId = "my-unique-group")
 public void handleMessage(String message) {
     log.info("Received: {}", message);
 }
 ```
 
-### 6. Problemas de Performance
+### 6. Performance Issues
 
-#### Síntomas - Problemas de Performance
+#### Symptoms - Low Performance
 
-- Latencia alta en mensajes
-- Throughput bajo
-- Timeouts frecuentes
+- High message latency
+- Low throughput
+- Frequent timeouts
 
-#### Optimizaciones
+#### Optimizations
 
 ```yaml
-# En docker-compose.yml, agregar configuraciones de performance
+# In docker-compose.yml, add performance settings
 kafka:
   environment:
     KAFKA_NUM_NETWORK_THREADS: 8
@@ -170,7 +170,7 @@ kafka:
 ```
 
 ```java
-// Configuración optimizada del producer
+// Optimized producer configuration
 @Bean
 public ProducerFactory<String, Object> producerFactory() {
     Map<String, Object> props = new HashMap<>();
@@ -182,18 +182,18 @@ public ProducerFactory<String, Object> producerFactory() {
 }
 ```
 
-### 7. Errores de Serialización/Deserialización
+### 7. Serialization/Deserialization Errors
 
-#### Síntomas - Errores de Serialización/Deserialización
+#### Symptoms - Deserialization Failures
 
 - "Error deserializing value"
 - "JsonParseException"
-- Mensajes corruptos
+- Corrupted messages
 
-#### Soluciones de Serialización/Deserialización
+#### Serialization/Deserialization Solutions
 
 ```java
-// Configuración robusta de deserialización
+// Robust deserialization setup
 @Bean
 public ConsumerFactory<String, Object> consumerFactory() {
     Map<String, Object> props = new HashMap<>();
@@ -206,126 +206,126 @@ public ConsumerFactory<String, Object> consumerFactory() {
 }
 ```
 
-### 8. Problemas de Espacio en Disco
+### 8. Disk Space Issues
 
-#### Síntomas - Problemas de Espacio en Disco
+#### Symptoms - No Disk Space
 
 - "No space left on device"
-- Kafka se detiene inesperadamente
-- Performance degradada
+- Kafka stops unexpectedly
+- Degraded performance
 
-#### Soluciones de Espacio en Disco
+#### Disk Space Solutions
 
 ```powershell
-# Verificar uso de espacio
+# Check disk usage
 docker system df
 
-# Limpiar datos de Kafka (¡CUIDADO! Esto borra todos los mensajes)
+# Clean Kafka data (WARNING: deletes all messages)
 .\scripts\kafka-manager.ps1 stop
 docker volume rm fp_kafka-data
 .\scripts\kafka-manager.ps1 start
 
-# Configurar retención de mensajes
+# Configure topic retention
 docker exec fp-kafka kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name product-events --alter --add-config retention.ms=86400000
 ```
 
-## 🛠️ Comandos de Debugging
+## 🛠️ Debugging Commands
 
-### Verificación General
+### General Check
 
 ```powershell
-# Estado completo del sistema
+# Full system status
 .\scripts\kafka-manager.ps1 status
 
-# Logs en tiempo real
+# Real-time logs
 .\scripts\kafka-manager.ps1 logs
 
-# Verificar conectividad
+# Connectivity check
 docker exec fp-kafka kafka-broker-api-versions --bootstrap-server localhost:9092
 ```
 
-### Inspección de Topics
+### Topic Inspection
 
 ```powershell
-# Listar todos los topics
+# List all topics
 docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --list
 
-# Describir un topic específico
+# Describe a topic
 docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --describe --topic product-events
 
-# Ver configuración de un topic
+# Show topic config
 docker exec fp-kafka kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name product-events --describe
 ```
 
-### Monitoreo de Consumer Groups
+### Consumer Group Monitoring
 
 ```powershell
-# Listar consumer groups
+# List consumer groups
 docker exec fp-kafka kafka-consumer-groups --bootstrap-server localhost:9092 --list
 
-# Ver detalles de un group
+# Describe a group
 docker exec fp-kafka kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group my-service-group
 
-# Resetear offsets (¡CUIDADO!)
+# Reset offsets (WARNING!)
 docker exec fp-kafka kafka-consumer-groups --bootstrap-server localhost:9092 --group my-service-group --reset-offsets --to-earliest --topic product-events --execute
 ```
 
-### Testing Manual
+### Manual Testing
 
 ```powershell
-# Producir mensajes de prueba
+# Produce test messages
 docker exec -it fp-kafka kafka-console-producer --bootstrap-server localhost:9092 --topic product-events
 
-# Consumir mensajes
+# Consume messages
 docker exec fp-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic product-events --from-beginning
 
-# Consumir con consumer group
+# Consume with a consumer group
 docker exec fp-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic product-events --group test-group
 ```
 
-## 📊 Monitoreo Proactivo
+## 📊 Proactive Monitoring
 
-### Health Checks Automáticos
+### Automated Health Checks
 
 ```powershell
-# Script de verificación de salud
+# Kafka health check script
 function Test-KafkaHealth {
-    Write-Host "Verificando salud de Kafka..." -ForegroundColor Yellow
+    Write-Host "Checking Kafka health..." -ForegroundColor Yellow
 
-    # Verificar contenedores
+    # Check containers
     $containers = docker ps --filter "name=fp-" --format "{{.Names}}" 2>$null
     if ($containers.Count -lt 3) {
-        Write-Host "❌ No todos los contenedores están ejecutándose" -ForegroundColor Red
+        Write-Host "Not all containers are running" -ForegroundColor Red
         return $false
     }
 
-    # Verificar conectividad
-    $result = docker exec fp-kafka kafka-broker-api-versions --bootstrap-server localhost:9092 2>$null
+    # Check connectivity
+    docker exec fp-kafka kafka-broker-api-versions --bootstrap-server localhost:9092 2>$null
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "❌ Kafka no responde" -ForegroundColor Red
+        Write-Host "Kafka is not responding" -ForegroundColor Red
         return $false
     }
 
-    Write-Host "✅ Kafka está saludable" -ForegroundColor Green
+    Write-Host "Kafka is healthy" -ForegroundColor Green
     return $true
 }
 ```
 
-### Alertas de Log
+### Log Alerts
 
 ```powershell
-# Buscar errores en logs
+# Search for errors in logs
 docker logs fp-kafka 2>&1 | Select-String -Pattern "ERROR|WARN|Exception"
 docker logs fp-zookeeper 2>&1 | Select-String -Pattern "ERROR|WARN|Exception"
 docker logs fp-kafka-ui 2>&1 | Select-String -Pattern "ERROR|WARN|Exception"
 ```
 
-## 🆘 Escalación de Problemas
+## 🆘 Escalation Procedures
 
-### Información a Recopilar
+### Information to Collect
 
 ```powershell
-# Crear reporte de diagnóstico
+# Generate diagnostic report
 $reportPath = "kafka-diagnostic-$(Get-Date -Format 'yyyyMMdd-HHmmss').txt"
 
 @"
@@ -352,46 +352,46 @@ $(docker system df)
 $(docker version)
 "@ | Out-File -FilePath $reportPath
 
-Write-Host "Reporte de diagnóstico creado: $reportPath" -ForegroundColor Green
+Write-Host "Diagnostic report created: $reportPath" -ForegroundColor Green
 ```
 
-### Contacto y Soporte
+### Support Contact
 
-Si los problemas persisten después de seguir esta guía:
+If issues persist after following this guide:
 
-1. Generar reporte de diagnóstico usando el script anterior
-2. Revisar logs detallados de microservicios
-3. Verificar configuración de red y firewall
-4. Crear issue en el repositorio con el reporte completo
+1. Generate the diagnostic report using the above script
+2. Review detailed microservice logs
+3. Check network and firewall settings
+4. Open an issue in the repository with the full report
 
-## 🔄 Procedimientos de Recuperación
+## 🔄 Recovery Procedures
 
-### Recuperación Completa
+### Full Recovery
 
 ```powershell
-# Parada completa y limpieza
+# Full stop and cleanup
 .\scripts\kafka-manager.ps1 stop
 docker system prune -f
 docker volume prune -f
 
-# Reinicio completo
+# Full restart
 .\scripts\kafka-manager.ps1 start
 
-# Verificación
+# Verification
 .\scripts\kafka-manager.ps1 status
 .\scripts\kafka-manager.ps1 topics
 ```
 
-### Recuperación de Datos
+### Data Recovery
 
 ```powershell
-# Backup de topics importantes antes de problemas
+# Backup important topics before issues
 docker exec fp-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic product-events --from-beginning > backup-product-events.json
 
-# Restaurar mensajes después de recuperación
+# Restore messages after recovery
 docker exec -i fp-kafka kafka-console-producer --bootstrap-server localhost:9092 --topic product-events < backup-product-events.json
 ```
 
 ---
 
-**Recuerda**: La mayoría de problemas se resuelven con un reinicio completo del stack. Siempre verifica logs para entender la causa raíz.
+**Remember**: Most issues are resolved with a full stack restart. Always check logs to identify the root cause.

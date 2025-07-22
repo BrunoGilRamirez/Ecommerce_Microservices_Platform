@@ -1,12 +1,12 @@
-# 🏭 Configuración para Producción - Kafka Infrastructure
+# 🏭 Production Setup - Kafka Infrastructure
 
-## 📋 Consideraciones de Producción
+## 📋 Production Considerations
 
-Esta guía proporciona las mejores prácticas y configuraciones recomendadas para desplegar Kafka en un entorno de producción.
+This guide provides best practices and recommended configurations for deploying Kafka in a production environment.
 
-## ⚡ Configuraciones Críticas
+## ⚡ Critical Configurations
 
-### 1. Configuración de Cluster Multi-Broker
+### 1. Multi-Broker Cluster Configuration
 
 ```yaml
 # docker-compose-production.yml
@@ -203,10 +203,10 @@ networks:
     driver: bridge
 ```
 
-### 2. Configuración de Seguridad con SSL/SASL
+### 2. SSL/SASL Authentication Configuration
 
 ```yaml
-# Configuración con autenticación SASL_SSL
+# SSL/SASL authentication example
 kafka-1:
   environment:
     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
@@ -227,10 +227,10 @@ kafka-1:
     - ./ssl:/etc/kafka/secrets
 ```
 
-### 3. Configuración de Topics para Producción
+### 3. Production Topics Creation Script
 
 ```powershell
-# Script para crear topics con configuración de producción
+# Script to create topics with production settings
 function Create-ProductionTopics {
     $topics = @(
         @{
@@ -239,7 +239,7 @@ function Create-ProductionTopics {
             replication = 3
             configs = @{
                 "min.insync.replicas" = "2"
-                "retention.ms" = "604800000"  # 7 días
+                "retention.ms" = "604800000"  # 7 days
                 "compression.type" = "lz4"
                 "cleanup.policy" = "delete"
             }
@@ -271,10 +271,10 @@ function Create-ProductionTopics {
     foreach ($topic in $topics) {
         Write-Host "Creating topic: $($topic.name)" -ForegroundColor Cyan
 
-        # Crear topic
+        # Create topic if not exists
         docker exec kafka-1 kafka-topics --bootstrap-server localhost:9092 --create --topic $($topic.name) --partitions $($topic.partitions) --replication-factor $($topic.replication) --if-not-exists
 
-        # Aplicar configuraciones
+        # Apply configs
         foreach ($config in $topic.configs.GetEnumerator()) {
             docker exec kafka-1 kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name $($topic.name) --alter --add-config "$($config.Key)=$($config.Value)"
         }
@@ -282,14 +282,13 @@ function Create-ProductionTopics {
 }
 ```
 
-## 🔧 Configuración de Microservicios para Producción
+## 🔧 Microservices Production Configuration
 
 ### Producer Configuration
 
 ```java
 @Configuration
 public class ProductionKafkaProducerConfig {
-
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
@@ -361,7 +360,6 @@ public class ProductionKafkaProducerConfig {
 ```java
 @Configuration
 public class ProductionKafkaConsumerConfig {
-
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
@@ -425,9 +423,9 @@ public class ProductionKafkaConsumerConfig {
 }
 ```
 
-## 📊 Monitoreo y Observabilidad
+## 📊 Monitoring & Observability
 
-### 1. Configuración de Métricas con Prometheus
+### 1. Prometheus Metrics Configuration
 
 ```yaml
 # prometheus.yml
@@ -446,7 +444,7 @@ scrape_configs:
       - targets: ["localhost:9308"]
 ```
 
-### 2. JMX Exporter Configuration
+### 2. JMX Exporter Rules
 
 ```yaml
 # kafka-jmx-exporter.yml
@@ -468,7 +466,7 @@ rules:
       partition: "$4"
 ```
 
-### 3. Alertas de Kafka
+### 3. Kafka Alerting Rules
 
 ```yaml
 # kafka-alerts.yml
@@ -512,12 +510,12 @@ groups:
           description: "Kafka has {{ $value }} under-replicated partitions on {{ $labels.instance }}"
 ```
 
-## 🔐 Configuración de Seguridad Avanzada
+## 🔐 Advanced Security Configuration
 
-### 1. Certificados SSL
+### 1. SSL Certificates
 
 ```bash
-# Generar certificados para Kafka
+# Generate Kafka certificates
 #!/bin/bash
 
 # Create CA
@@ -568,12 +566,12 @@ Client {
 };
 ```
 
-## 🚀 Deployment y Operaciones
+## 🚀 Deployment and Operations
 
 ### 1. Health Checks
 
 ```yaml
-# Añadir a docker-compose.yml
+# Add to docker-compose.yml
 kafka-1:
   healthcheck:
     test: kafka-broker-api-versions --bootstrap-server localhost:9092
@@ -583,10 +581,10 @@ kafka-1:
     start_period: 40s
 ```
 
-### 2. Backup y Recovery
+### 2. Backup and Recovery
 
 ```powershell
-# Script de backup
+# Backup script
 function Backup-KafkaTopics {
     param(
         [string]$BackupPath = ".\backup\$(Get-Date -Format 'yyyyMMdd-HHmmss')"
@@ -604,7 +602,7 @@ function Backup-KafkaTopics {
     Write-Host "Backup completed in: $BackupPath" -ForegroundColor Green
 }
 
-# Script de recovery
+# Recovery script
 function Restore-KafkaTopics {
     param(
         [string]$BackupPath
@@ -625,7 +623,7 @@ function Restore-KafkaTopics {
 ### 3. Rolling Updates
 
 ```powershell
-# Script para rolling update
+# Rolling update script
 function Update-KafkaCluster {
     $brokers = @("kafka-1", "kafka-2", "kafka-3")
 
@@ -654,34 +652,27 @@ function Update-KafkaCluster {
 }
 ```
 
-## 📈 Optimización de Performance
+## 📈 Performance Optimization
 
-### 1. Configuración de OS
+### 1. OS-Level Tuning
 
 ```bash
-# Configuraciones del sistema operativo para producción
-# /etc/sysctl.conf
-
-# Network optimizations
+# /etc/sysctl.conf settings for production
 net.core.rmem_default = 262144
 net.core.rmem_max = 16777216
 net.core.wmem_default = 262144
 net.core.wmem_max = 16777216
 net.ipv4.tcp_rmem = 4096 65536 16777216
 net.ipv4.tcp_wmem = 4096 65536 16777216
-
-# File descriptor limits
 fs.file-max = 2097152
-
-# Virtual memory settings
 vm.max_map_count = 262144
 vm.swappiness = 1
 ```
 
-### 2. Configuración de JVM
+### 2. JVM Options
 
 ```yaml
-# Añadir a docker-compose.yml
+# Add to docker-compose.yml
 kafka-1:
   environment:
     KAFKA_HEAP_OPTS: "-Xmx4G -Xms4G"
@@ -697,15 +688,15 @@ kafka-1:
       -Dcom.sun.management.jmxremote.ssl=false
 ```
 
-## 🎯 Conclusiones
+## 🎯 Conclusions
 
-Esta configuración de producción proporciona:
+This production configuration provides:
 
-- **Alta Disponibilidad**: Cluster de 3 brokers con replicación
-- **Durabilidad**: Configuraciones de persistencia y backup
-- **Seguridad**: SSL/SASL y autenticación
-- **Observabilidad**: Métricas, logs y alertas
-- **Performance**: Optimizaciones de red y JVM
-- **Operabilidad**: Scripts de gestión y mantenimiento
+- **High Availability**: 3-broker cluster with replication
+- **Durability**: Persistence and backup settings
+- **Security**: SSL/SASL and authentication
+- **Observability**: Metrics, logs, and alerts
+- **Performance**: Network and JVM optimizations
+- **Operability**: Management and maintenance scripts
 
-Adapta estas configuraciones según las necesidades específicas de tu entorno de producción.
+Adapt these settings to fit your specific production environment needs.

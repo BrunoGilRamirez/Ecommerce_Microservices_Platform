@@ -1,14 +1,14 @@
-# 🔧 Kafka Infrastructure - Guía de Configuración Detallada
+# 🔧 Kafka Infrastructure - Detailed Setup Guide
 
-## 📋 Descripción
+## 📋 Description
 
-Esta guía proporciona instrucciones detalladas para configurar y personalizar la infraestructura de Kafka para el ecosistema de microservicios FP.
+This guide provides detailed instructions for configuring and customizing the Kafka infrastructure for the FP microservices ecosystem.
 
-## 🏗️ Arquitectura Completa
+## 🏗️ Full Architecture
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Microservicios FP                        │
+│                        FP Microservices                         │
 ├─────────────────┬─────────────────┬─────────────────┬───────────┤
 │   Auth Service  │  User Service   │ Product Service │ Order...  │
 │    (port 8081)  │   (port 9002)   │   (port 9001)   │(port 9003)│
@@ -26,9 +26,9 @@ Esta guía proporciona instrucciones detalladas para configurar y personalizar l
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔧 Configuración del Docker Compose
+## 🔧 Docker Compose Configuration
 
-### Servicio Zookeeper
+### Zookeeper Service
 
 ```yaml
 zookeeper:
@@ -44,7 +44,7 @@ zookeeper:
     - kafka-network
 ```
 
-### Servicio Kafka
+### Kafka Service
 
 ```yaml
 kafka:
@@ -73,7 +73,7 @@ kafka:
     - kafka-network
 ```
 
-### Servicio Kafka UI
+### Kafka UI Service
 
 ```yaml
 kafka-ui:
@@ -91,58 +91,58 @@ kafka-ui:
     - kafka-network
 ```
 
-## 📊 Configuración de Topics
+## 📊 Topic Configuration
 
-### Topics Automáticos
+### Automatic Topics
 
-Los siguientes topics se crean automáticamente al iniciar:
+The following topics are automatically created on startup:
 
 ```yaml
 Topics:
   product-events:
     partitions: 3
     replication-factor: 1
-    description: "Eventos del servicio de productos (CREATED, UPDATED, DELETED)"
+    description: "Product service events (CREATED, UPDATED, DELETED)"
 
   user-events:
     partitions: 3
     replication-factor: 1
-    description: "Eventos del servicio de usuarios (CREATED, UPDATED, DELETED)"
+    description: "User service events (CREATED, UPDATED, DELETED)"
 
   order-events:
     partitions: 3
     replication-factor: 1
-    description: "Eventos del servicio de pedidos (CREATED, UPDATED, CANCELLED)"
+    description: "Order service events (CREATED, UPDATED, CANCELLED)"
 
   product:
     partitions: 3
     replication-factor: 1
-    description: "Topic simple para operaciones de productos"
+    description: "Simple topic for product operations"
 
   user:
     partitions: 3
     replication-factor: 1
-    description: "Topic simple para operaciones de usuarios"
+    description: "Simple topic for user operations"
 
   order:
     partitions: 3
     replication-factor: 1
-    description: "Topic simple para operaciones de pedidos"
+    description: "Simple topic for order operations"
 ```
 
-### Crear Topics Personalizados
+### Create Custom Topics
 
 ```powershell
-# Crear un topic específico
+# Create a specific topic
 docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --create --topic my-custom-topic --partitions 3 --replication-factor 1
 
-# Crear topic con configuración específica
+# Create a topic with custom configuration
 docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --create --topic my-topic --partitions 6 --replication-factor 1 --config retention.ms=86400000
 ```
 
-## 🔌 Configuración de Microservicios Spring Boot
+## 🔌 Spring Boot Microservice Configuration
 
-### Configuración Base (application.properties)
+### Base Configuration (application.properties)
 
 ```properties
 # Kafka Configuration
@@ -155,7 +155,7 @@ spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.Strin
 spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
 ```
 
-### Configuración Producer
+### Producer Configuration
 
 ```java
 @Configuration
@@ -184,7 +184,7 @@ public class KafkaProducerConfig {
 }
 ```
 
-### Configuración Consumer
+### Consumer Configuration
 
 ```java
 @Configuration
@@ -218,7 +218,7 @@ public class KafkaConsumerConfig {
 }
 ```
 
-## 📝 Ejemplos de Uso
+## 📝 Usage Examples
 
 ### Producer Example
 
@@ -282,9 +282,9 @@ public class OrderEventConsumer {
 }
 ```
 
-## 🌐 Variables de Entorno
+## 🌐 Environment Variables
 
-Crear archivo `.env` para configuraciones personalizadas:
+Create a `.env` file for custom configurations:
 
 ```env
 # Kafka Configuration
@@ -302,12 +302,12 @@ KAFKA_UI_PORT=9090
 KAFKA_CLUSTERS_0_NAME=fp-cluster
 ```
 
-## 🔒 Configuración de Seguridad (Opcional)
+## 🔒 Security Configuration (Optional)
 
-Para entornos que requieren autenticación:
+For environments that require authentication:
 
 ```yaml
-# Agregar al servicio kafka en docker-compose.yml
+# Add to kafka service in docker-compose.yml
 environment:
   KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SASL_PLAINTEXT
   KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
@@ -315,11 +315,11 @@ environment:
   KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf"
 ```
 
-## 📊 Monitoreo y Métricas
+## 📊 Monitoring and Metrics
 
 ### JMX Metrics
 
-Kafka expone métricas JMX en el puerto 9101. Puedes conectar herramientas como:
+Kafka exposes JMX metrics on port 9101. You can connect tools like:
 
 - JConsole
 - Prometheus + JMX Exporter
@@ -328,17 +328,17 @@ Kafka expone métricas JMX en el puerto 9101. Puedes conectar herramientas como:
 ### Health Checks
 
 ```powershell
-# Verificar que Kafka responde
+# Verify Kafka is responding
 docker exec fp-kafka kafka-broker-api-versions --bootstrap-server localhost:9092
 
-# Verificar topics
+# Verify topics
 docker exec fp-kafka kafka-topics --bootstrap-server localhost:9092 --list
 
-# Verificar consumer groups
+# Verify consumer groups
 docker exec fp-kafka kafka-consumer-groups --bootstrap-server localhost:9092 --list
 ```
 
-## 📁 Estructura de Datos Recomendada
+## 📁 Recommended Data Structure
 
 ### Event Structure
 
@@ -360,15 +360,15 @@ docker exec fp-kafka kafka-consumer-groups --bootstrap-server localhost:9092 --l
 }
 ```
 
-## 🚀 Próximos Pasos
+## 🚀 Next Steps
 
-1. Personaliza la configuración según tus necesidades
-2. Implementa los producers en tus microservicios
-3. Implementa los consumers correspondientes
-4. Configura monitoreo y alertas
-5. Considera configuraciones de producción
+1. Customize the configuration according to your needs
+2. Implement producers in your microservices
+3. Implement the corresponding consumers
+4. Configure monitoring and alerts
+5. Consider production-level settings
 
-## 🔗 Referencias
+## 🔗 References
 
 - [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
 - [Spring Kafka Documentation](https://spring.io/projects/spring-kafka)
