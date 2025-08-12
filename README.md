@@ -1,8 +1,8 @@
-# FP Micro Config Server
+# Ecommerce Micro Config Server
 
 ## Overview
 
-The **FP Micro Config Server** is a centralized configuration service built with Spring Cloud Config Server. It serves as the configuration hub for all microservices in the FP (Final Project) ecosystem, providing externalized configuration management in a distributed system.
+The **Ecommerce Micro Config Server** is a centralized configuration service built with Spring Cloud Config Server. It serves as the configuration hub for all microservices in the Ecommerce (Ecommerce project) ecosystem, providing externalized configuration management in a distributed system.
 
 This service allows multiple microservices to retrieve their configuration properties from a single, centralized location, enabling easy configuration management across different environments (development, testing, production).
 
@@ -55,7 +55,7 @@ The main configuration is located in [`application.properties`](src/main/resourc
 
 ```properties
 # Server Configuration
-spring.application.name=fp_micro_configserver
+spring.application.name=Ecommerce_micro_configserver
 server.port=8888
 ```
 
@@ -65,7 +65,7 @@ The [`application-dev.properties`](src/main/resources/application-dev.properties
 
 ```properties
 # Git Repository Configuration (Local)
-spring.cloud.config.server.git.uri=file:///C:/path/to/fp_files_configproperties
+spring.cloud.config.server.git.uri=file:///C:/path/to/Ecommerce_files_configproperties
 spring.cloud.config.server.git.search-paths=**
 
 # Security Configuration
@@ -77,17 +77,17 @@ app.security.error.message=Only local requests are allowed
 
 ### Configuration Repository Structure
 
-The configuration files are stored in the `fp_files_configproperties` directory:
+The configuration files are stored in the `Ecommerce_files_configproperties` directory:
 
 ```text
-fp_files_configproperties/
+Ecommerce_files_configproperties/
 ├── application.properties          # Global configuration
-├── fp_micro_authservice.properties # Auth service specific config
-├── fp_micro_userservice.properties # User service specific config
-├── fp_micro_gateway.properties     # Gateway specific config
-├── fp_micro_orderservice.properties
-├── fp_micro_productservice.properties
-├── fp_micro_discoveryserver.properties
+├── Ecommerce_micro_authservice.properties # Auth service specific config
+├── Ecommerce_micro_userservice.properties # User service specific config
+├── Ecommerce_micro_gateway.properties     # Gateway specific config
+├── Ecommerce_micro_orderservice.properties
+├── Ecommerce_micro_productservice.properties
+├── Ecommerce_micro_discoveryserver.properties
 └── *.xml files                     # Logback configurations
 ```
 
@@ -120,14 +120,14 @@ app.security.localhost.ipv6=0:0:0:0:0:0:0:1
 
 ### 1. Main Application Class
 
-**File**: `src/main/java/com/aspiresys/fp_micro_configserver/FpMicroConfigserverApplication.java`
+**File**: `src/main/java/com/aspiresys/Ecommerce_micro_configserver/EcommerceMicroConfigserverApplication.java`
 
 ```java
 @SpringBootApplication
 @EnableConfigServer
-public class FpMicroConfigserverApplication {
+public class EcommerceMicroConfigserverApplication {
     public static void main(String[] args) {
-        SpringApplication.run(FpMicroConfigserverApplication.class, args);
+        SpringApplication.run(EcommerceMicroConfigserverApplication.class, args);
     }
 }
 ```
@@ -136,7 +136,7 @@ The `@EnableConfigServer` annotation enables Spring Cloud Config Server function
 
 ### 2. Security Configuration
 
-**File**: `src/main/java/com/aspiresys/fp_micro_configserver/config/SecurityConfig.java`
+**File**: `src/main/java/com/aspiresys/Ecommerce_micro_configserver/config/SecurityConfig.java`
 
 This class implements:
 
@@ -166,7 +166,7 @@ public class SecurityConfig {
 
 ### 3. Constants Definition
 
-**File**: `src/main/java/com/aspiresys/fp_micro_configserver/config/ConfigServerConstants.java`
+**File**: `src/main/java/com/aspiresys/Ecommerce_micro_configserver/config/ConfigServerConstants.java`
 
 Contains all the constants used throughout the application:
 
@@ -176,7 +176,7 @@ Contains all the constants used throughout the application:
 
 ### 4. Servlet Initializer
 
-**File**: `src/main/java/com/aspiresys/fp_micro_configserver/ServletInitializer.java`
+**File**: `src/main/java/com/aspiresys/Ecommerce_micro_configserver/ServletInitializer.java`
 
 Enables deployment as a WAR file in external servlet containers.
 
@@ -197,16 +197,16 @@ The Config Server exposes several REST endpoints for configuration retrieval:
 
 ```bash
 # Get auth service configuration for default profile
-GET http://localhost:8888/fp_micro_authservice/default
+GET http://localhost:8888/Ecommerce_micro_authservice/default
 
 # Get user service configuration for production profile
-GET http://localhost:8888/fp_micro_userservice/prod
+GET http://localhost:8888/Ecommerce_micro_userservice/prod
 
 # Get configuration in properties format
-GET http://localhost:8888/fp_micro_gateway-default.properties
+GET http://localhost:8888/Ecommerce_micro_gateway-default.properties
 
 # Get configuration in YAML format
-GET http://localhost:8888/fp_micro_orderservice-dev.yml
+GET http://localhost:8888/Ecommerce_micro_orderservice-dev.yml
 ```
 
 ### Health Check Endpoints
@@ -225,37 +225,37 @@ GET http://localhost:8888/actuator/configserver
 
 - Java 17 or higher
 - Maven 3.6+
-- Configuration repository set up in `fp_files_configproperties`
+- Configuration repository set up in `Ecommerce_files_configproperties`
 
 ### Development Mode
 
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd fp_micro_configserver
+cd Ecommerce_micro_configserver
 
 # Run with Maven
 ./mvnw spring-boot:run
 
 # Or run the JAR file
 ./mvnw clean package
-java -jar target/fp_micro_configserver-0.0.1-SNAPSHOT.war
+java -jar target/Ecommerce_micro_configserver-0.0.1-SNAPSHOT.war
 ```
 
 ## Configuration Management
 
 ### Adding New Service Configuration
 
-1. Create a new properties file in `fp_files_configproperties/`:
+1. Create a new properties file in `Ecommerce_files_configproperties/`:
 
    ```bash
-   touch fp_files_configproperties/fp_micro_newservice.properties
+   touch Ecommerce_files_configproperties/Ecommerce_micro_newservice.properties
    ```
 
 2. Add service-specific configuration:
 
    ```properties
-   # fp_micro_newservice.properties
+   # Ecommerce_micro_newservice.properties
    server.port=8090
    spring.datasource.url=jdbc:h2:mem:newservice
    logging.level.com.aspiresys=DEBUG
@@ -264,7 +264,7 @@ java -jar target/fp_micro_configserver-0.0.1-SNAPSHOT.war
 3. The new configuration will be automatically available at:
 
    ```bash
-   http://localhost:8888/fp_micro_newservice/default
+   http://localhost:8888/Ecommerce_micro_newservice/default
    ```
 
 ### Environment-Specific Configuration
@@ -272,11 +272,11 @@ java -jar target/fp_micro_configserver-0.0.1-SNAPSHOT.war
 Create profile-specific files:
 
 ```mermaid
-fp_files_configproperties/
-├── fp_micro_userservice.properties      # Default profile
-├── fp_micro_userservice-dev.properties  # Development profile
-├── fp_micro_userservice-test.properties # Test profile
-└── fp_micro_userservice-prod.properties # Production profile
+Ecommerce_files_configproperties/
+├── Ecommerce_micro_userservice.properties      # Default profile
+├── Ecommerce_micro_userservice-dev.properties  # Development profile
+├── Ecommerce_micro_userservice-test.properties # Test profile
+└── Ecommerce_micro_userservice-prod.properties # Production profile
 ```
 
 ### Centralized Logging Configuration
@@ -284,7 +284,7 @@ fp_files_configproperties/
 All services can use centralized logging configuration through `logback-spring.xml` files:
 
 ```xml
-<!-- Example: fp_micro_authservice-logback-spring.xml -->
+<!-- Example: Ecommerce_micro_authservice-logback-spring.xml -->
 <configuration>
     <property name="LOG_PATH" value="./logs/auth-service"/>
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
@@ -379,7 +379,7 @@ Run the test suite:
 
 Key test classes:
 
-- `FpMicroConfigserverApplicationTests`: Integration tests
+- `EcommerceMicroConfigserverApplicationTests`: Integration tests
 - `SecurityConfigTest`: Security configuration tests
 
 ## Integration with Other Services
@@ -389,7 +389,7 @@ Key test classes:
 Other microservices connect to this config server by adding to their `application.properties`:
 
 ```properties
-spring.application.name=fp_micro_userservice
+spring.application.name=Ecommerce_micro_userservice
 spring.cloud.config.uri=http://localhost:8888
 spring.cloud.config.fail-fast=true
 spring.cloud.config.retry.initial-interval=3000
@@ -404,7 +404,7 @@ When used with Eureka Discovery Server:
 ```properties
 # In client services
 spring.cloud.config.discovery.enabled=true
-spring.cloud.config.discovery.service-id=fp_micro_configserver
+spring.cloud.config.discovery.service-id=Ecommerce_micro_configserver
 ```
 
 ## Best Practices
