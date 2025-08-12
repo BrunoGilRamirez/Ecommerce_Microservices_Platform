@@ -1,8 +1,8 @@
-# FP Micro Gateway
+# Ecommerce Micro Gateway
 
 ## Overview
 
-The **FP Micro Gateway** is a Spring Cloud Gateway-based API Gateway that serves as the single entry point for all client requests in the FP (Final Project) microservices ecosystem. It provides centralized routing, authentication, authorization, load balancing, and cross-cutting concerns for the distributed system.
+The **Ecommerce Micro Gateway** is a Spring Cloud Gateway-based API Gateway that serves as the single entry point for all client requests in the Ecommerce (Final Project) microservices ecosystem. It provides centralized routing, authentication, authorization, load balancing, and cross-cutting concerns for the distributed system.
 
 This gateway acts as a reverse proxy, routing requests to appropriate microservices while handling security, CORS, and providing a unified API interface for frontend applications.
 
