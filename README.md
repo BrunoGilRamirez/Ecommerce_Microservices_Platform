@@ -1,6 +1,6 @@
 # Discovery Server
 
-The Discovery Server is a critical infrastructure microservice that implements Netflix Eureka Server for service discovery in the FP microservices ecosystem. It acts as a registry where all microservices register themselves and discover other services, enabling dynamic service location and load balancing without hard-coded endpoints.
+The Discovery Server is a critical infrastructure microservice that implements Netflix Eureka Server for service discovery in the Ecommerce microservices ecosystem. It acts as a registry where all microservices register themselves and discover other services, enabling dynamic service location and load balancing without hard-coded endpoints.
 
 This service is essential for the microservices architecture and must be the first service to start, as all other services depend on it for registration and discovery.
 
@@ -143,7 +143,7 @@ The Discovery Server implements the **Service Discovery Pattern** in microservic
 The Discovery Server is designed to be the **first service** to start in the ecosystem:
 
 ```bash
-# Start order for FP microservices:
+# Start order for Ecommerce microservices:
 1. Config Server (optional - for centralized config)
 2. Discovery Server (this service) - Port 8761
 3. Auth Service - Port 8081
