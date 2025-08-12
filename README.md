@@ -268,4 +268,4 @@ If you encounter issues:
 
 ---
 
-**Built for the FP microservices ecosystem** 🚀
+**Built for the Ecommerce project microservices ecosystem** 🚀
