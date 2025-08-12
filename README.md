@@ -1,6 +1,6 @@
-# 🚀 FP Kafka Infrastructure
+# 🚀 Ecommerce Kafka Infrastructure
 
-Standalone repository for the Apache Kafka infrastructure used in the FP microservices ecosystem.
+Standalone repository for the Apache Kafka infrastructure used in the Ecommerce microservices ecosystem.
 
 ## 📋 Description
 
