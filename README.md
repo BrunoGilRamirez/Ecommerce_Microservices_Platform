@@ -2,7 +2,7 @@
 
 The Product Service is a microservice responsible for managing products in the e-commerce platform. It provides a RESTful API for product creation, retrieval, updating, and deletion across multiple categories, with advanced security features and event-driven architecture.
 
-This service is part of the FP microservices ecosystem and requires other services (Auth Service, Discovery Server, Config Server) to be running to function properly.
+This service is part of the Ecommerce microservices ecosystem and requires other services (Auth Service, Discovery Server, Config Server) to be running to function properly.
 
 ![Service Structure](<./diagrams/Final Project - ServiceStructure.png>)
 
