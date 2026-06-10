@@ -1,0 +1,88 @@
+# Archivos específicos del entorno
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Datos temporales
+data/
+tmp/
+temp/
+
+# Backups
+backup/
+*.backup
+*.bak
+
+# SSL/Certificados (no versionar certificados reales)
+ssl/
+certs/
+*.jks
+*.p12
+*.pem
+*.key
+*.crt
+
+# Configuraciones locales
+config/local/
+*-local.properties
+*-local.yml
+*-local.yaml
+
+# IDE y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS específicos
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Docker específicos
+.docker/
+docker-compose.override.yml
+
+# Scripts personalizados
+*-custom.*
+*-local.*
+
+# Reportes y métricas
+reports/
+metrics/
+monitoring/
+
+# Archivos de configuración sensibles
+jaas.conf
+*_jaas.conf
+*-secrets.*
+
+# Carpetas de node_modules si usas herramientas JS
+node_modules/
+
+# Python específicos (si usas scripts Python)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Archivos de test
+test-results/
+coverage/
+
+# Archivos temporales de PowerShell
+*.ps1~
+
+# Archivos de diagnóstico
+kafka-diagnostic-*.txt
+diagnostic-*.log
