@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Propiedades específicas del Gateway -->
+    <property name="LOG_PATH" value="./logs/gateway"/>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
+    <!-- Patrón simplificado para consola (sin %clr que requiere Spring Boot completo) -->
+    <property name="LOG_PATTERN_CONSOLE" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [GATEWAY] [%logger{36}] - %msg%n"/>
+    
+    <!-- Console Appender para desarrollo -->
+    <springProfile name="!prod">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOG_PATTERN_CONSOLE}</pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <!-- File Appender para logs del Gateway -->
+    <appender name="FILE_GATEWAY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/gateway.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/gateway.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>800MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- File Appender para logs de routing -->
+    <appender name="FILE_ROUTING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/gateway-routing.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/gateway-routing.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>40MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>600MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- File Appender para logs de seguridad -->
+    <appender name="FILE_SECURITY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/gateway-security.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/gateway-security.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>30MB</maxFileSize>
+            <maxHistory>45</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- File Appender para errores -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/gateway-error.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/gateway-error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>25MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <!-- Logger específico para Gateway -->
+    <!-- Configuración para desarrollo (!prod) -->
+    <springProfile name="!prod">
+        <logger name="com.aspiresys.fp_micro_gateway" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE_GATEWAY"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+    
+    <!-- Configuración para producción (prod) -->
+    <springProfile name="prod">
+        <logger name="com.aspiresys.fp_micro_gateway" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE_GATEWAY"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </logger>
+    </springProfile>
+
+    <!-- Logger para Spring Cloud Gateway -->
+    <!-- Configuración para desarrollo (!prod) -->
+    <springProfile name="!prod">
+        <logger name="org.springframework.cloud.gateway" level="INFO" additivity="false">
+            <appender-ref ref="FILE_ROUTING"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+    
+    <!-- Configuración para producción (prod) -->
+    <springProfile name="prod">
+        <logger name="org.springframework.cloud.gateway" level="INFO" additivity="false">
+            <appender-ref ref="FILE_ROUTING"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </logger>
+    </springProfile>
+
+    <!-- Logger para routing específico -->
+    <!-- Configuración para desarrollo (!prod) -->
+    <springProfile name="!prod">
+        <logger name="org.springframework.cloud.gateway.route" level="INFO" additivity="false">
+            <appender-ref ref="FILE_ROUTING"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+    
+    <!-- Configuración para producción (prod) -->
+    <springProfile name="prod">
+        <logger name="org.springframework.cloud.gateway.route" level="INFO" additivity="false">
+            <appender-ref ref="FILE_ROUTING"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </logger>
+    </springProfile>
+
+    <!-- Logger para filtros del gateway -->
+    <!-- Configuración para desarrollo (!prod) -->
+    <springProfile name="!prod">
+        <logger name="org.springframework.cloud.gateway.filter" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE_ROUTING"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <!-- Logger para seguridad OAuth2 -->
+        <logger name="org.springframework.security.oauth2" level="INFO" additivity="false">
+            <appender-ref ref="FILE_SECURITY"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+    
+    <!-- Configuración para producción (prod) -->
+    <springProfile name="prod">
+        <logger name="org.springframework.cloud.gateway.filter" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE_ROUTING"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </logger>
+
+        <!-- Logger para seguridad OAuth2 -->
+        <logger name="org.springframework.security.oauth2" level="INFO" additivity="false">
+            <appender-ref ref="FILE_SECURITY"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </logger>
+    </springProfile>
+
+    <!-- Logger para JWT -->
+    <springProfile name="!prod">
+        <logger name="org.springframework.security.oauth2.jwt" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE_SECURITY"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+    
+    <springProfile name="prod">
+        <logger name="org.springframework.security.oauth2.jwt" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE_SECURITY"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </logger>
+    </springProfile>
+
+    <!-- Logger para Spring Security -->
+    <springProfile name="!prod">
+        <logger name="org.springframework.security" level="INFO" additivity="false">
+            <appender-ref ref="FILE_SECURITY"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+    
+    <springProfile name="prod">
+        <logger name="org.springframework.security" level="INFO" additivity="false">
+            <appender-ref ref="FILE_SECURITY"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </logger>
+    </springProfile>
+
+    <!-- Loggers para dependencias externas -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.web" level="INFO"/>
+    <logger name="io.netty" level="WARN"/>
+    <logger name="reactor.netty" level="INFO"/>
+    <logger name="com.netflix.eureka" level="WARN"/>
+
+    <!-- Root logger -->
+    <!-- Root logger para desarrollo (!prod) -->
+    <springProfile name="!prod">
+        <root level="INFO">
+            <appender-ref ref="FILE_GATEWAY"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+    
+    <!-- Root logger para producción (prod) -->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="FILE_GATEWAY"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </root>
+    </springProfile>
+</configuration>
