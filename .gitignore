@@ -1,0 +1,6 @@
+logs/
+.pids
+*.log
+**/target/
+**/node_modules/
+infrastructure/fp_files_configproperties
