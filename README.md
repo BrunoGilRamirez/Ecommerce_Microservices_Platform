@@ -1,90 +1,88 @@
 # Ecommerce Microservices Platform
 
-Monorepo unificado de la plataforma Ecommerce basada en microservicios con Spring Boot, Spring Cloud, Kafka y React.
+Unified monorepo for an Ecommerce platform built on microservices with Spring Boot,
+Spring Cloud, Kafka, and React. The entire system runs in Docker containers.
 
-Todo el sistema corre en contenedores Docker.
+## Structure
 
-## Estructura
-
-```
+\```
 apps/
-  frontend/frontend-product-order/   # Frontend React + Vite (puerto 3000)
+  frontend/frontend-product-order/   # React + Vite frontend (port 3000)
 services/
-  auth-service/                      # Autenticación OAuth2/JWT (puerto 8081)
-  user-service/                      # Gestión de usuarios (puerto 9001)
-  product-service/                   # CRUD de productos (puerto 9002)
-  order-service/                     # Gestión de órdenes (puerto 9003)
+  auth-service/                      # OAuth2/JWT authentication (port 8081)
+  user-service/                      # User management (port 9001)
+  product-service/                   # Product CRUD (port 9002)
+  order-service/                     # Order management (port 9003)
 infrastructure/
-  config-server/                     # Spring Cloud Config Server (puerto 8888)
-  discovery-server/                  # Eureka Discovery Server (puerto 8761)
-  gateway/                           # API Gateway (puerto 8080)
-  kafka/                             # Configuración de Kafka
-  mysql/                             # Scripts de inicialización de MySQL
-```
+  config-server/                     # Spring Cloud Config Server (port 8888)
+  discovery-server/                  # Eureka Discovery Server (port 8761)
+  gateway/                           # API Gateway (port 8080)
+  kafka/                             # Kafka configuration
+  mysql/                             # MySQL initialization scripts
+\```
 
-## Requisitos
+## Requirements
 
-- **Docker** y **Docker Compose**
+- **Docker** and **Docker Compose**
 
-## Inicio rápido
+## Quick Start
 
-### Arrancar todo el sistema
+### Start the entire system
 
-```bash
+\```bash
 ./start.sh
-```
+\```
 
-El script:
+The script:
+1. Verifies/Clones the configuration repository (`Ecommerce_files_configproperties`)
+2. Builds Docker images for all services
+3. Brings up containers in order (MySQL → Kafka → Config Server → Discovery → services → Gateway → Frontend)
+4. Waits for MySQL, Config Server, and Discovery Server to be ready
+5. Prints a summary with the URL for each service
 
-1. Verifica/Clona el repositorio de configuraciones (`Ecommerce_files_configproperties`)
-2. Construye las imágenes Docker de todos los servicios
-3. Levanta los contenedores en orden (MySQL → Kafka → Config Server → Discovery → servicios → Gateway → Frontend)
-4. Espera a que MySQL, Config Server y Discovery Server estén listos
-5. Muestra un resumen con las URLs de cada servicio
+### Stop the entire system
 
-### Detener todo el sistema
-
-```bash
+\```bash
 ./stop.sh
-```
+\```
 
-Detiene todos los contenedores Docker.
+Stops all Docker containers.
 
-### Ver logs
+### View logs
 
-```bash
-docker compose logs -f              # Todos los servicios
-docker compose logs -f gateway      # Un servicio específico
-```
+\```bash
+docker compose logs -f              # All services
+docker compose logs -f gateway      # A specific service
+\```
 
-## Servicios
+## Services
 
-| Servicio          | Puerto | URL                            |
-|-------------------|--------|--------------------------------|
-| Frontend          | 3000   | http://localhost:3000           |
-| Gateway           | 8080   | http://localhost:8080           |
-| Auth Service      | 8081   | http://localhost:8081           |
-| User Service      | 9001   | http://localhost:9001           |
-| Product Service   | 9002   | http://localhost:9002           |
-| Order Service     | 9003   | http://localhost:9003           |
-| Discovery Server  | 8761   | http://localhost:8761           |
-| Config Server     | 8888   | http://localhost:8888           |
-| Kafka UI          | 9090   | http://localhost:9090           |
-| MySQL             | 3306   | localhost:3306                  |
+| Service           | Port | URL                            |
+|-------------------|------|--------------------------------|
+| Frontend          | 3000 | http://localhost:3000          |
+| Gateway           | 8080 | http://localhost:8080          |
+| Auth Service      | 8081 | http://localhost:8081          |
+| User Service      | 9001 | http://localhost:9001          |
+| Product Service   | 9002 | http://localhost:9002          |
+| Order Service     | 9003 | http://localhost:9003          |
+| Discovery Server  | 8761 | http://localhost:8761          |
+| Config Server     | 8888 | http://localhost:8888          |
+| Kafka UI          | 9090 | http://localhost:9090          |
+| MySQL             | 3306 | localhost:3306                 |
 
-## Infraestructura
+## Infrastructure
 
-### Bases de datos MySQL
+### MySQL Databases
 
-| Base de datos | Servicio    | Usuario          | Contraseña        |
-|---------------|-------------|------------------|-------------------|
-| `auth_db`     | auth        | `service_auth`   | `securePassword123` |
-| `user_db`     | user        | `service_user`   | `securePassword123` |
-| `product_db`  | product     | `service_product`| `securePassword123` |
-| `order_db`    | order       | `service_order`  | `securePassword123` |
+| Database    | Service | User              | Password            |
+|-------------|---------|-------------------|---------------------|
+| `auth_db`   | auth    | `service_auth`    | `securePassword123` |
+| `user_db`   | user    | `service_user`    | `securePassword123` |
+| `product_db`| product | `service_product` | `securePassword123` |
+| `order_db`  | order   | `service_order`   | `securePassword123` |
 
 ### Kafka
 
 - **Broker**: `localhost:9092`
-- **Topics**: `product`, `user` (auto-creados)
+- **Topics**: `product`, `user` (auto-created)
 - **Kafka UI**: http://localhost:9090
