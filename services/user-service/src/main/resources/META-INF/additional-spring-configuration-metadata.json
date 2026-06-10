@@ -1,0 +1,44 @@
+{
+  "properties": [
+    {
+      "name": "service.env.gateway.server",
+      "type": "java.lang.String",
+      "description": "A description for 'service.env.gateway.server'"
+    },
+    {
+      "name": "service.env.frontend.server",
+      "type": "java.lang.String",
+      "description": "A description for 'service.env.frontend.server'"
+    },
+    {
+      "name": "app.aop.audit.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable or disable AOP audit logging aspect. When enabled, methods annotated with @Auditable will log audit information including operation details, parameters, and results.",
+      "defaultValue": true
+    },
+    {
+      "name": "app.aop.performance.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable or disable AOP performance monitoring aspect. When enabled, methods annotated with @ExecutionTime will be monitored for execution time and performance metrics.",
+      "defaultValue": true
+    },
+    {
+      "name": "app.aop.validation.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable or disable AOP parameter validation aspect. When enabled, methods annotated with @ValidateParameters will automatically validate their input parameters.",
+      "defaultValue": true
+    },
+    {
+      "name": "app.aop.validation.fail-fast",
+      "type": "java.lang.Boolean",
+      "description": "Configure validation behavior to fail fast. When true, validation stops at the first error found. When false, all parameters are validated and all errors are collected.",
+      "defaultValue": true
+    },
+    {
+      "name": "app.aop.validation.validate-email-format",
+      "type": "java.lang.Boolean",
+      "description": "Enable email format validation in the validation aspect. When enabled, string parameters will be validated against email regex pattern if they contain '@' symbol.",
+      "defaultValue": true
+    }
+  ]
+}
