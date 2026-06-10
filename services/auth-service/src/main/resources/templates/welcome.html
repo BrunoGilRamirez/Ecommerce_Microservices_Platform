@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Auth Service</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <span class="navbar-brand">Auth Service</span>
+        <div class="navbar-nav ms-auto">
+          <span class="navbar-text me-3">
+            Hello, <span sec:authentication="name">User</span>
+          </span>
+          <form th:action="@{/logout}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-outline-light btn-sm">
+              Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="mb-0">Welcome to the Authentication Service!</h3>
+            </div>
+            <div class="card-body">
+              <p class="lead">
+                You have successfully logged into the authentication service.
+              </p>
+
+              <h5>Your session information:</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>User:</strong>
+                  <span sec:authentication="name">Not available</span>
+                </li>
+                <li class="list-group-item">
+                  <strong>Roles:</strong>
+                  <span sec:authentication="authorities">[ROLE_USER]</span>
+                </li>
+                <li class="list-group-item">
+                  <strong>Access date:</strong>
+                  <span
+                    th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm:ss')}"
+                    >Now</span
+                  >
+                </li>
+              </ul>
+
+              <hr />
+
+              <h5>Useful links:</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title">Frontend App</h6>
+                      <p class="card-text small">
+                        Go to the Frontend application.
+                      </p>
+                      <aa
+                        href="http://localhost:3000"
+                        class="btn btn-sm btn-outline-primary"
+                        target="_blank"
+                        rel="noopener"
+                        >Frontend</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mt-5 py-3 bg-light text-center">
+      <div class="container">
+        <small class="text-muted">Auth Service - Port 8081</small>
+      </div>
+    </footer>
+  </body>
+</html>
