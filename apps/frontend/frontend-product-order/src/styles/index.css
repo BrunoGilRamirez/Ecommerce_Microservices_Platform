@@ -1,0 +1,10 @@
+/* Importar todos los estilos en orden */
+@import "./variables.css";
+@import "./components.css";
+@import "./layout.css";
+@import "./components/navigation.css";
+@import "./components/products.css";
+@import "./components/orders.css";
+@import "./components/userprofile.css";
+@import "./components/admin-forms.css";
+@import "./components/dashboard.css";

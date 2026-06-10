@@ -1,0 +1,241 @@
+/* Estilos para el Dashboard */
+
+.admin-welcome {
+  border-left: 4px solid var(--primary-color);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 123, 255, 0.1) 0%,
+    var(--bg-secondary) 100%
+  );
+}
+
+.user-welcome {
+  border-left: 4px solid var(--success-color);
+  background: linear-gradient(
+    135deg,
+    rgba(40, 167, 69, 0.1) 0%,
+    var(--bg-secondary) 100%
+  );
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.feature-item {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+}
+
+.feature-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.feature-item h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.feature-item p {
+  margin: 0 0 1rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.admin-restrictions {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid var(--warning-color);
+  border-radius: var(--border-radius-sm);
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+.admin-restrictions h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--warning-color);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.admin-restrictions p {
+  margin: 0 0 0.5rem 0;
+  color: var(--warning-color);
+  font-size: 0.9rem;
+}
+
+.admin-restrictions ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--warning-color);
+}
+
+.admin-restrictions li {
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.auth-info-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.role-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.role-section h4 {
+  margin: 0 0 0.5rem 0;
+}
+
+.role-badge {
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+}
+
+.role-admin {
+  background: var(--danger-color);
+  color: white;
+}
+
+.role-user {
+  background: var(--success-color);
+  color: white;
+}
+
+.admin-badge {
+  background: var(--danger-color);
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.7rem;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Estilos específicos para cards del dashboard */
+.container .card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+.container .card-header {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.container .card-body {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* Access Denied Component */
+.access-denied-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+.access-denied-content {
+  text-align: center;
+  max-width: 500px;
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.access-denied-content h2 {
+  color: #dc3545;
+  margin: 0 0 1rem 0;
+  font-size: 1.8rem;
+}
+
+.access-denied-message {
+  font-size: 1.1rem;
+  color: #495057;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
+.access-denied-reason {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0 0 2rem 0;
+  line-height: 1.5;
+}
+
+.access-denied-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .feature-item {
+    padding: 1rem;
+  }
+
+  .auth-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .role-section {
+    align-items: center;
+  }
+
+  .access-denied-content {
+    padding: 2rem 1rem;
+  }
+
+  .access-denied-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-badge {
+    display: block;
+    margin: 0.5rem 0 0 0;
+    text-align: center;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .access-denied-content h2 {
+    font-size: 1.5rem;
+  }
+}
